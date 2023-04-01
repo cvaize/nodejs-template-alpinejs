@@ -18,8 +18,8 @@
     </h1>
     Pages:
     <ul>
-        <li><a href="/" style="<%= route === '/'?'font-weight: bold':'' %>">Home</a></li>
-        <li><a href="/about" style="<%= route === '/about'?'font-weight: bold':'' %>">About</a></li>
+        <li><a href="/?<%= strParams %>" style="<%= route === '/'?'font-weight: bold':'' %>">Home</a></li>
+        <li><a href="/about?<%= strParams %>" style="<%= route === '/about'?'font-weight: bold':'' %>">About</a></li>
     </ul>
     Params:
     <ul>
@@ -37,7 +37,7 @@
     <br>
 </div>
 <div x-data="{ products: [], existProducts: [] }" style="display: flex; flex-wrap: wrap"
-     x-init="(await fetch('/api')).json().then(ps => products = ps);">
+     x-init="(await fetch('/api?<%= strParams %>')).json().then(ps => products = ps);">
     <section style="padding: 20px;"
          x-init="$nextTick(() => { existProducts = Array.from($el.querySelectorAll('li')).map(el => ({
             image: el.querySelector('img').src,

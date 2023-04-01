@@ -49,7 +49,8 @@ const server = http.createServer(async (req, res) => {
 
     const splitUrl = url.split('?');
     const route = splitUrl[0];
-    const params = querystring.parse(splitUrl[1] ?? "");
+    const strParams = splitUrl[1] ?? "";
+    const params = querystring.parse(strParams);
 
     console.log(`Request url=${url}; route=${route} params=${JSON.stringify(params)}`)
     let response = '404: File Not Found';
@@ -62,7 +63,7 @@ const server = http.createServer(async (req, res) => {
             const count = Number(params.count ?? 100);
             const products = getProducts(count);
 
-            return ejs.render(template, {products, route});
+            return ejs.render(template, {products, route, strParams});
         }, params?.cache !== '0');
 
     } else if (route === '/api' && req.method === 'GET') {
