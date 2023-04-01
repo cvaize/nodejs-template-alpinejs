@@ -4,7 +4,7 @@ Install:
 ```shell
 git clone https://github.com/cvaize/nodejs-template-alpinejs.git \
 cd nodejs-template-alpinejs \
-npm i
+docker run --user $(id -u):$(id -g) --rm -ti -v $(pwd):/app -w="/app" node:latest npm i
 ```
 
 Run:
