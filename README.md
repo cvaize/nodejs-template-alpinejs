@@ -1,1 +1,1 @@
-# Тестовый стенд Node.js + EJS + Alpine.js
+# Test stand Node.js + EJS + Alpine.js

@@ -1,5 +1,5 @@
 require('dotenv').config()
-const {products} = require('../src/data');
+const {getProducts} = require('../src/data');
 const http = require('http');
 const ejs = require('ejs');
 const fs = require('fs');
@@ -59,6 +59,9 @@ const server = http.createServer(async (req, res) => {
 
         response = await getCachedResponse(url, async () => {
             await execTimeout(params.timeout);
+            const count = Number(params.count ?? 100);
+            const products = getProducts(count);
+
             return ejs.render(template, {products});
         }, params?.cache !== '0');
 
@@ -67,6 +70,9 @@ const server = http.createServer(async (req, res) => {
 
         response = await getCachedResponse(url, async () => {
             await execTimeout(params.timeout);
+            const count = Number(params.count ?? 100);
+            const products = getProducts(count);
+
             return JSON.stringify(products);
         }, params?.cache !== '0');
 
