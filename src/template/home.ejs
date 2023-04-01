@@ -1,0 +1,13 @@
+<ul>
+    <% products.forEach(function(product){ %>
+        <li style="margin-bottom: 10px;">
+            <div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap">
+                <img src="<%= product.image %>" alt="<%= product.name %>" width="60" height="40">
+                <div style="margin-left: 10px;">
+                    <div style="font-weight: bold"><%= product.name %></div>
+                    <div><%= product.description %></div>
+                </div>
+            </div>
+        </li>
+    <% }); %>
+</ul>
