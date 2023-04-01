@@ -16,6 +16,11 @@
     <h1>
         Node.js + EJS + Alpine.js
     </h1>
+    Pages:
+    <ul>
+        <li><a href="/" style="<%= route === '/'?'font-weight: bold':'' %>">Home</a></li>
+        <li><a href="/about" style="<%= route === '/about'?'font-weight: bold':'' %>">About</a></li>
+    </ul>
     Params:
     <ul>
         <li>cache=0 - Disable cache, default: 1</li>

@@ -54,7 +54,7 @@ const server = http.createServer(async (req, res) => {
     console.log(`Request url=${url}; route=${route} params=${JSON.stringify(params)}`)
     let response = '404: File Not Found';
 
-    if (route === '/' && req.method === 'GET') {
+    if ((route === '/' || route === '/about') && req.method === 'GET') {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
 
         response = await getCachedResponse(url, async () => {
@@ -62,7 +62,7 @@ const server = http.createServer(async (req, res) => {
             const count = Number(params.count ?? 100);
             const products = getProducts(count);
 
-            return ejs.render(template, {products});
+            return ejs.render(template, {products, route});
         }, params?.cache !== '0');
 
     } else if (route === '/api' && req.method === 'GET') {
