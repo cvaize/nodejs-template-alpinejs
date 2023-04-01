@@ -12,26 +12,28 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
-<h1>
-    Node.js + EJS + Alpine.js
-</h1>
-Params:
-<ul>
-    <li>cache=0 - Disable cache, default: 1</li>
-    <li>timeout=100 - Timeout for simulate DB, default: 0</li>
-    <li>count=100 - Count Products, default: 100</li>
-</ul>
-<a href="/api">
-    JSON Products with cache
-</a>
-<br>
-<a href="/">
-    HTML Products with cache
-</a>
-<br>
+<div style="padding: 0 20px;">
+    <h1>
+        Node.js + EJS + Alpine.js
+    </h1>
+    Params:
+    <ul>
+        <li>cache=0 - Disable cache, default: 1</li>
+        <li>timeout=100 - Timeout for simulate DB, default: 0</li>
+        <li>count=100 - Count Products, default: 100</li>
+    </ul>
+    <a href="/api">
+        JSON Products with cache
+    </a>
+    <br>
+    <a href="/">
+        HTML Products with cache
+    </a>
+    <br>
+</div>
 <div x-data="{ products: [], existProducts: [] }" style="display: flex; flex-wrap: wrap"
      x-init="(await fetch('/api')).json().then(ps => products = ps);">
-    <section style="margin-bottom: 20px;"
+    <section style="padding: 20px;"
          x-init="$nextTick(() => { existProducts = Array.from($el.querySelectorAll('li')).map(el => ({
             image: el.querySelector('img').src,
             name: el.querySelector('.js-product-name').innerText,
@@ -56,7 +58,7 @@ Params:
             <% }); %>
         </ul>
     </section>
-    <section>
+    <section style="padding: 20px;">
         <h2>Parse Products from existing html</h2>
         <ul>
             <template x-for="product in existProducts">
@@ -76,7 +78,7 @@ Params:
             </template>
         </ul>
     </section>
-    <section>
+    <section style="padding: 20px;">
         <h2>Fetch Products CSR</h2>
         <ul>
             <template x-for="product in products">
