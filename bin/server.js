@@ -112,6 +112,11 @@ const server = http.createServer(async (req, res) => {
             return JSON.stringify(products);
         }, params?.cache !== '0');
 
+    } else if (route === '/clear-cache' && req.method === 'GET') {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        await redisClient.flushAll();
+        response = `Cache cleared. <a href="/">Home</a>`;
+        res.statusCode = 201;
     } else {
         res.statusCode = 404;
     }

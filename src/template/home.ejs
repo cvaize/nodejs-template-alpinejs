@@ -4,16 +4,17 @@
     <%- include('components/head'); -%>
 </head>
 <body>
-<div style="padding: 0 20px;">
+<div style="padding: 0 20px; margin-bottom: 20px;">
     <h1>
         Node.js + EJS + Alpine.js
     </h1>
-    Pages:
+    <div style="font-weight: bold;">Pages:</div>
     <ul>
         <li><a href="/?<%= writeParams(params, ['page', 'components']) %>" style="<%= route === '/'?'font-weight: bold':'' %>">Home</a></li>
         <li><a href="/about?<%= writeParams(params, ['page', 'components']) %>" style="<%= route === '/about'?'font-weight: bold':'' %>">About</a></li>
+        <li><a href="/clear-cache">Clear cache</a></li>
     </ul>
-    Params:
+    <div style="font-weight: bold;">Params:</div>
     <ul>
         <li>cache=0 - Disable cache, default: 1</li>
         <li>timeout=100 - Timeout for simulate DB, default: 0</li>
@@ -31,11 +32,12 @@
 <div x-data="{ products: [], existProducts: [] }" style="display: flex; flex-wrap: wrap"
      x-init="(await fetch('/api?<%= writeParams(params, ['page', 'components']) %>')).json().then(ps => products = ps);
             const asyncPaginate = async (event) => {
-                console.log(event);
                 if(event.target.tagName === 'A' && event.target.classList.contains('js-paginate-link')){
                     event.preventDefault();
                     event.target.innerText = '⚙';
-                    (await fetch(event.target.href+'&components=products')).text().then(t => {
+                    const href = event.target.href;
+                    (void 0 !== history.pushState ? history.pushState(null, document.title, href) : window.location.assign(href));
+                    (await fetch(href+'&components=products')).text().then(t => {
                         $el.innerHTML = t;
                     });
                 }
