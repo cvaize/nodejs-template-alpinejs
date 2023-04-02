@@ -2,7 +2,6 @@ require('dotenv').config()
 const {getProducts} = require('../src/data');
 const http = require('http');
 const ejs = require('ejs');
-// const fs = require('fs');
 const path = require('path');
 const {createClient: redisCreateClient} = require('redis');
 const querystring = require('node:querystring');
@@ -14,8 +13,6 @@ const redisClient = redisCreateClient({url: `redis://${process.env.REDIS_HOST}:$
 redisClient.on('error', err => console.log('Redis Client Error', err));
 let redisConnected = false;
 redisClient.connect().then(() => redisClient.flushAll()).then(() => redisConnected = true);
-
-// const template = fs.readFileSync(path.resolve('src/template/home.ejs'), 'utf-8')
 
 const getCachedResponse = async (key, cb, isUseCache = true) => {
     if (!redisConnected || !isUseCache) {
@@ -81,6 +78,10 @@ const server = http.createServer(async (req, res) => {
             const components = params.components;
             let template = 'src/template/home.ejs';
 
+            if (route !== '/') {
+                template = `src/template${route}.ejs`;
+            }
+
             if (components === 'products') {
                 template = 'src/template/components/products.ejs';
             }
@@ -98,7 +99,6 @@ const server = http.createServer(async (req, res) => {
                     resolve(str);
                 });
             });
-            // return ejs.render(template, {products, route, strParams}, {async: true, root: path.resolve('src/template')});
         }, params?.cache !== '0');
 
     } else if (route === '/api' && req.method === 'GET') {

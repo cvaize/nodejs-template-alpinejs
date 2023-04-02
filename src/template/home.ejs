@@ -8,12 +8,7 @@
     <h1>
         Node.js + EJS + Alpine.js
     </h1>
-    <div style="font-weight: bold;">Pages:</div>
-    <ul>
-        <li><a href="/?<%= writeParams(params, ['page', 'components']) %>" style="<%= route === '/'?'font-weight: bold':'' %>">Home</a></li>
-        <li><a href="/about?<%= writeParams(params, ['page', 'components']) %>" style="<%= route === '/about'?'font-weight: bold':'' %>">About</a></li>
-        <li><a href="/clear-cache">Clear cache</a></li>
-    </ul>
+    <%- include('components/nav', {writeParams, params, route}); -%>
     <div style="font-weight: bold;">Params:</div>
     <ul>
         <li>cache=0 - Disable cache, default: 1</li>
