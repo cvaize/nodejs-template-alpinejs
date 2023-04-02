@@ -2,7 +2,7 @@ require('dotenv').config()
 const {getProducts} = require('../src/data');
 const http = require('http');
 const ejs = require('ejs');
-const fs = require('fs');
+// const fs = require('fs');
 const path = require('path');
 const {createClient: redisCreateClient} = require('redis');
 const querystring = require('node:querystring');
@@ -15,7 +15,7 @@ redisClient.on('error', err => console.log('Redis Client Error', err));
 let redisConnected = false;
 redisClient.connect().then(() => redisClient.flushAll()).then(() => redisConnected = true);
 
-const template = fs.readFileSync(path.resolve('src/template/home.ejs'), 'utf-8')
+// const template = fs.readFileSync(path.resolve('src/template/home.ejs'), 'utf-8')
 
 const getCachedResponse = async (key, cb, isUseCache = true) => {
     if (!redisConnected || !isUseCache) {
@@ -43,6 +43,16 @@ const execTimeout = async (timeout) => {
     }
 }
 
+const writeParams = (params, without) => {
+    if(without) {
+        params = {...params};
+        for (const withoutParam of without) {
+            delete params[withoutParam];
+        }
+    }
+    return querystring.stringify(params)
+}
+
 const server = http.createServer(async (req, res) => {
     res.statusCode = 200;
     const url = req.url;
@@ -63,7 +73,32 @@ const server = http.createServer(async (req, res) => {
             const count = Number(params.count ?? 100);
             const products = getProducts(count);
 
-            return ejs.render(template, {products, route, strParams});
+            const paramsWithoutPage = {...params};
+            delete paramsWithoutPage.page;
+            const strParamsWithoutPage = querystring.stringify(paramsWithoutPage);
+
+            const page = Number(params.page ?? 1);
+            const components = params.components;
+            let template = 'src/template/home.ejs';
+
+            if (components === 'products') {
+                template = 'src/template/components/products.ejs';
+            }
+
+            return await new Promise((resolve, reject) => {
+                ejs.renderFile(template, {
+                    products,
+                    route,
+                    strParamsWithoutPage,
+                    page,
+                    params,
+                    writeParams
+                }, {root: path.resolve('src/template')}, function (e, str) {
+                    if (e) reject(e);
+                    resolve(str);
+                });
+            });
+            // return ejs.render(template, {products, route, strParams}, {async: true, root: path.resolve('src/template')});
         }, params?.cache !== '0');
 
     } else if (route === '/api' && req.method === 'GET') {

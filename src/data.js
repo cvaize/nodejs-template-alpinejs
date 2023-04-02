@@ -8,7 +8,7 @@ module.exports = {
                 id,
                 name: id + ". Креветки, партия " + Math.round(Math.random() * limit),
                 description: "Крутые креветки ID: " + id + ". Доставка на номер " + Math.round(Math.random() * limit) + ".",
-                image: "https://placehold.co/600x400"
+                image: `https://via.placeholder.com/${Math.round(Math.random() * 1000)}x${Math.round(Math.random() * 1000)}`
             })
         }
         return products;

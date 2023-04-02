@@ -1,15 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=10.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>nodejs-template-alpinejs</title>
-    <meta name="description" content="Test stand Node.js + EJS + Alpine.js">
-    <meta name="keywords" content="Node.js, EJS, Alpine.js">
-    <meta name="author" content="Orlov Dmitry">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <%- include('components/head'); -%>
 </head>
 <body>
 <div style="padding: 0 20px;">
@@ -18,8 +10,8 @@
     </h1>
     Pages:
     <ul>
-        <li><a href="/?<%= strParams %>" style="<%= route === '/'?'font-weight: bold':'' %>">Home</a></li>
-        <li><a href="/about?<%= strParams %>" style="<%= route === '/about'?'font-weight: bold':'' %>">About</a></li>
+        <li><a href="/?<%= writeParams(params, ['page', 'components']) %>" style="<%= route === '/'?'font-weight: bold':'' %>">Home</a></li>
+        <li><a href="/about?<%= writeParams(params, ['page', 'components']) %>" style="<%= route === '/about'?'font-weight: bold':'' %>">About</a></li>
     </ul>
     Params:
     <ul>
@@ -37,72 +29,20 @@
     <br>
 </div>
 <div x-data="{ products: [], existProducts: [] }" style="display: flex; flex-wrap: wrap"
-     x-init="(await fetch('/api?<%= strParams %>')).json().then(ps => products = ps);">
-    <section style="padding: 20px;"
-         x-init="$nextTick(() => { existProducts = Array.from($el.querySelectorAll('li')).map(el => ({
-            image: el.querySelector('img').src,
-            name: el.querySelector('.js-product-name').innerText,
-            description: el.querySelector('.js-product-description').innerText,
-         })) });">
-        <h2>Products SSR</h2>
-        <ul>
-            <% products.forEach(function(product, key){ %>
-                <li style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap">
-                        <img src="<%= product.image %>" alt="<%= product.name %>" width="60" height="40">
-                        <div style="margin-left: 10px;">
-                            <div class="js-product-name" style="font-weight: bold"><%= product.name %></div>
-                            <div x-data="{ open: false }">
-                                <button @click="open = ! open">Expand</button>
-
-                                <div x-show="open" class="js-product-description" style="display: none;"><%= product.description %></div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            <% }); %>
-        </ul>
-    </section>
-    <section style="padding: 20px;">
-        <h2>Parse Products from existing html</h2>
-        <ul>
-            <template x-for="product in existProducts">
-                <li style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap">
-                        <img x-bind:src="product.image" x-bind:alt="product.name" width="60" height="40">
-                        <div style="margin-left: 10px;">
-                            <div style="font-weight: bold" x-text="product.name"></div>
-                            <div x-data="{ open: false }">
-                                <button @click="open = ! open">Expand</button>
-
-                                <div x-show="open" x-text="product.description" style="display: none;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </template>
-        </ul>
-    </section>
-    <section style="padding: 20px;">
-        <h2>Fetch Products CSR</h2>
-        <ul>
-            <template x-for="product in products">
-                <li style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap">
-                        <img x-bind:src="product.image" x-bind:alt="product.name" width="60" height="40">
-                        <div style="margin-left: 10px;">
-                            <div style="font-weight: bold" x-text="product.name"></div>
-                            <div x-data="{ open: false }">
-                                <button @click="open = ! open">Expand</button>
-
-                                <div x-show="open" x-text="product.description" style="display: none;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </template>
-        </ul>
-    </section>
+     x-init="(await fetch('/api?<%= writeParams(params, ['page', 'components']) %>')).json().then(ps => products = ps);
+            const asyncPaginate = async (event) => {
+                console.log(event);
+                if(event.target.tagName === 'A' && event.target.classList.contains('js-paginate-link')){
+                    event.preventDefault();
+                    event.target.innerText = '⚙';
+                    (await fetch(event.target.href+'&components=products')).text().then(t => {
+                        $el.innerHTML = t;
+                    });
+                }
+            }
+            $el.addEventListener('click', asyncPaginate);
+">
+    <%- include('components/products', {products, params, writeParams}); -%>
 </div>
 
 </body>

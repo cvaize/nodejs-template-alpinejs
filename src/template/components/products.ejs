@@ -1,0 +1,69 @@
+<nav style="min-width: 100%">
+        <ul style="display: flex; flex-wrap: wrap; padding-left: 16px;">
+                <% for (var i = 1; i <= 10; i++) { %>
+                        <li style="list-style: none; margin: 4px;">
+                                <a href="/?page=<%= i %><%= writeParams(params, ['page', 'components'])?'&'+writeParams(params, ['page', 'components']):writeParams(params, ['page', 'components']) %>"
+                                   class="js-paginate-link"
+                                   style="display: flex; align-items: center; justify-content: center; text-decoration: none;
+                                           border-radius: 50%; width: 30px; height: 30px; color: white; font-weight: bold;
+ <%= page === i?'background: cornflowerblue;':'background: deepskyblue;' %>">
+                                        <%= i %>
+                                </a>
+                        </li>
+                <% } %>
+        </ul>
+</nav>
+<section style="padding: 0 20px;">
+        <h2 style="margin-top: 0;">Products SSR</h2>
+        <ul x-init="$nextTick(() => { existProducts = Array.from($el.querySelectorAll('li')).map(el => ({
+            image: el.querySelector('.js-product-img').src,
+            name: el.querySelector('.js-product-name').innerText,
+            description: el.querySelector('.js-product-description').innerText,
+         })) });">
+                <% products.forEach(function(product){ %>
+                        <li style="margin-bottom: 10px;">
+                                <%- include('product', product); -%>
+                        </li>
+                <% }); %>
+        </ul>
+</section>
+<section style="padding: 0 20px;">
+        <h2 style="margin-top: 0;">Parse Products from existing html</h2>
+        <ul>
+                <template x-for="product in existProducts">
+                        <li style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap">
+                                        <img x-bind:src="product.image" x-bind:alt="product.name" width="60" height="40" style="object-fit: cover;">
+                                        <div style="margin-left: 10px;">
+                                                <div style="font-weight: bold" x-text="product.name"></div>
+                                                <div x-data="{ open: false }">
+                                                        <button @click="open = ! open">Expand</button>
+
+                                                        <div x-show="open" x-text="product.description" style="display: none;"></div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </li>
+                </template>
+        </ul>
+</section>
+<section style="padding: 0 20px;">
+        <h2 style="margin-top: 0;">Fetch Products CSR</h2>
+        <ul>
+                <template x-for="product in products">
+                        <li style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap">
+                                        <img x-bind:src="product.image" x-bind:alt="product.name" width="60" height="40" style="object-fit: cover;">
+                                        <div style="margin-left: 10px;">
+                                                <div style="font-weight: bold" x-text="product.name"></div>
+                                                <div x-data="{ open: false }">
+                                                        <button @click="open = ! open">Expand</button>
+
+                                                        <div x-show="open" x-text="product.description" style="display: none;"></div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </li>
+                </template>
+        </ul>
+</section>

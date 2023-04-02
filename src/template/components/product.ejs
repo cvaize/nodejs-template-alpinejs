@@ -1,0 +1,11 @@
+<div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap">
+    <img class="js-product-img" src="<%= image %>" alt="<%= name %>" width="60" height="40" style="object-fit: cover;">
+    <div style="margin-left: 10px;">
+        <div class="js-product-name" style="font-weight: bold"><%= name %></div>
+        <div x-data="{ open: false }">
+            <button @click="open = ! open">Expand</button>
+
+            <div x-show="open" class="js-product-description" style="display: none;"><%= description %></div>
+        </div>
+    </div>
+</div>
